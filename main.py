@@ -1,6 +1,15 @@
 import segno
+import json
+import os
 
-def create_qr_code(url: str, 
+if not os.path.exists('qr_code_destination'):
+    os.makedirs('qr_code_destination')
+
+with open('to_generate.json', 'r') as file:
+    data = json.load(file)
+
+def create_qr_code(url: str,
+                   file_name: str,
                    scale = 5, 
                    quiet_zone = 4, 
                    background_color = "#FFFFFF",
@@ -10,13 +19,12 @@ def create_qr_code(url: str,
     qr_code = segno.make_qr(url)
 
     qr_code.save(
-        "qr_code.png",
+        f"qr_code_destination/{file_name}.png",
         scale = scale, 
         border = quiet_zone,
         light = background_color,
         dark = black_color
     )
 
-url = "https://pays-de-la-loire.lesecologistes.fr/posts/27hdWEwgpKIsLn67yb3AeE/le-29-septembre-on-fete-l-ecologie-a-nantes"
-
-create_qr_code(url)
+for key, value in data.items():
+    create_qr_code(url=value, file_name=key)
