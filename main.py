@@ -54,5 +54,5 @@ def create_simple_qr_code(url: str,
 if __name__ == '__main__':
 
     for key, value in data.items():
-        create_qr_code(url=value, file_name=key, logo_path='./assets/logo_les_ecolos.jpg')
-        add_legend(image_path=f'qr_code_destination/{key}.png', text_to_add=key)
+        create_qr_code(url=value["link"], file_name=key, logo_path=value["logo_path"])
+        add_legend(image_path=f'qr_code_destination/{key}.png', text_to_add=value["account_name"])

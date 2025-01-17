@@ -5,6 +5,10 @@ For security reason, we are ignoring the json file necessary to create the QR co
 
 ```
 {
-    "example_key": "https://your-domain-name.com",
+    "example_key": {
+        "link": "https://example.com",
+        "logo_path": "./assets/foo.jpg",
+        "account_name": "@bar"
+    }
 }
 ```
