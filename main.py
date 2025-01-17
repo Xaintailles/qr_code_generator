@@ -3,6 +3,7 @@ from PIL import Image
 import io
 import json
 import os
+from add_text import add_legend
 
 if not os.path.exists('qr_code_destination'):
     os.makedirs('qr_code_destination')
@@ -13,7 +14,7 @@ with open('to_generate.json', 'r') as file:
 def create_qr_code(url: str,
                    file_name: str,
                    logo_path: str = None,
-                   scale = 5):
+                   scale = 20):
 
     out = io.BytesIO()
     segno.make_qr(url, error='h').save(out, scale=scale, kind='png')
@@ -34,7 +35,7 @@ def create_qr_code(url: str,
 
 def create_simple_qr_code(url: str,
                    file_name: str,
-                   scale = 5, 
+                   scale = 10, 
                    quiet_zone = 4, 
                    background_color = "#FFFFFF",
                    black_color = "#000000"):
@@ -50,5 +51,8 @@ def create_simple_qr_code(url: str,
         dark = black_color
     )
 
-for key, value in data.items():
-    create_qr_code(url=value, file_name=key, logo_path='./assets/logo_les_ecolos.jpg')
+if __name__ == '__main__':
+
+    for key, value in data.items():
+        create_qr_code(url=value, file_name=key, logo_path='./assets/logo_les_ecolos.jpg')
+        add_legend(image_path=f'qr_code_destination/{key}.png', text_to_add=key)
