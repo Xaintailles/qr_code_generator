@@ -22,15 +22,17 @@ def create_qr_code(url: str,
     # Important to let Pillow load the PNG
     out.seek(0)  
     img = Image.open(out)
-    img = img.convert('RGB')  # Ensure colors for the output
-    img_width, img_height = img.size
-    logo_max_size = img_height // 3  # May use a fixed value as well
-    logo_img = Image.open(logo_path)  # The logo
-    # Resize the logo to logo_max_size
-    logo_img.thumbnail((logo_max_size, logo_max_size), Image.Resampling.LANCZOS)
-    # Calculate the center of the QR code
-    box = ((img_width - logo_img.size[0]) // 2, (img_height - logo_img.size[1]) // 2)
-    img.paste(logo_img, box)
+
+    if logo_path is not None:
+        img = img.convert('RGB')  # Ensure colors for the output
+        img_width, img_height = img.size
+        logo_max_size = img_height // 3  # May use a fixed value as well
+        logo_img = Image.open(logo_path)  # The logo
+        # Resize the logo to logo_max_size
+        logo_img.thumbnail((logo_max_size, logo_max_size), Image.Resampling.LANCZOS)
+        # Calculate the center of the QR code
+        box = ((img_width - logo_img.size[0]) // 2, (img_height - logo_img.size[1]) // 2)
+        img.paste(logo_img, box)
     img.save(f'./qr_code_destination/{file_name}.png')
 
 def create_simple_qr_code(url: str,
@@ -54,5 +56,9 @@ def create_simple_qr_code(url: str,
 if __name__ == '__main__':
 
     for key, value in data.items():
-        create_qr_code(url=value["link"], file_name=key, logo_path=value["logo_path"])
+        if not value["logo_path"]:
+            create_qr_code(url=value["link"], file_name=key)
+        else:
+            create_qr_code(url=value["link"], file_name=key, logo_path=value["logo_path"])
+            
         add_legend(image_path=f'qr_code_destination/{key}.png', text_to_add=value["account_name"])
