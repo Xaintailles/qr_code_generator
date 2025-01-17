@@ -1,4 +1,6 @@
 import segno
+from PIL import Image
+import io
 import json
 import os
 
@@ -9,6 +11,28 @@ with open('to_generate.json', 'r') as file:
     data = json.load(file)
 
 def create_qr_code(url: str,
+                   file_name: str,
+                   logo_path: str = None,
+                   scale = 5):
+
+    out = io.BytesIO()
+    segno.make_qr(url, error='h').save(out, scale=scale, kind='png')
+
+    # Important to let Pillow load the PNG
+    out.seek(0)  
+    img = Image.open(out)
+    img = img.convert('RGB')  # Ensure colors for the output
+    img_width, img_height = img.size
+    logo_max_size = img_height // 3  # May use a fixed value as well
+    logo_img = Image.open(logo_path)  # The logo
+    # Resize the logo to logo_max_size
+    logo_img.thumbnail((logo_max_size, logo_max_size), Image.Resampling.LANCZOS)
+    # Calculate the center of the QR code
+    box = ((img_width - logo_img.size[0]) // 2, (img_height - logo_img.size[1]) // 2)
+    img.paste(logo_img, box)
+    img.save(f'./qr_code_destination/{file_name}.png')
+
+def create_simple_qr_code(url: str,
                    file_name: str,
                    scale = 5, 
                    quiet_zone = 4, 
@@ -27,4 +51,4 @@ def create_qr_code(url: str,
     )
 
 for key, value in data.items():
-    create_qr_code(url=value, file_name=key)
+    create_qr_code(url=value, file_name=key, logo_path='./assets/logo_les_ecolos.jpg')
