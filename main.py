@@ -22,9 +22,10 @@ def create_qr_code(url: str,
     # Important to let Pillow load the PNG
     out.seek(0)  
     img = Image.open(out)
+    img = img.convert('RGB')  # Ensure colors for the output
 
-    if logo_path is not None:
-        img = img.convert('RGB')  # Ensure colors for the output
+    if logo_path is not None and logo_path != '':
+        
         img_width, img_height = img.size
         logo_max_size = img_height // 3  # May use a fixed value as well
         logo_img = Image.open(logo_path)  # The logo
